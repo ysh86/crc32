@@ -22,17 +22,20 @@ func hashCRC32(in io.Reader, polynomial uint32) (string, error) {
 }
 
 func main() {
-	filePath := os.Args[1]
-	f, err := os.Open(filePath)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
+	for i := 1; i < len(os.Args); i++ {
+		filePath := os.Args[i]
+		f, err := os.Open(filePath)
+		if err != nil {
+			panic(err)
+		}
 
-	hash, err := hashCRC32(f, 0xedb88320)
-	if err != nil {
-		panic(err)
-	}
+		hash, err := hashCRC32(f, 0xedb88320)
+		if err != nil {
+			f.Close()
+			panic(err)
+		}
 
-	fmt.Printf("%s: %s\n", filePath, hash)
+		fmt.Printf("%s  %s\n", hash, filePath)
+		f.Close()
+	}
 }
